@@ -1,0 +1,876 @@
+swagger: "2.0"
+info:
+  description: "Offloading API"
+  version: "1.0.0"
+  title: "Offloading API"
+  termsOfService: "http://"
+  contact:
+    email: "xxx@xxx.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://"
+host: "xxx.com"
+basePath: "/v1"
+tags:
+- name: "Management"
+  description: "Offload Management API"
+- name: "Deployment"
+  description: "Deploy models or applications to edge nodes"
+- name: "Sample"
+  description: "Offloading Application sample"
+schemes:
+- "https"
+- "http"
+paths:
+  /auth:
+    post:
+      tags:
+      - "Management"
+      summary: "management login" 
+      description: "input username and password exchange for edge api access token"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "management login"
+        required: true
+        schema:
+          $ref: "#/components/schemas/login"
+      responses:
+        401:
+          description: "incorrect username or password"
+        200:
+          description: "Login successful"
+          schema:
+            $ref: "#/components/schemas/token"
+  /user:
+    post:
+      tags:
+      - "Management"
+      summary: "create a management user"
+      description: "create a management user"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "new user add"
+        required: true
+        schema:
+          $ref: "#/components/schemas/user"
+      responses:
+        200:
+          description: "Successfully add a new user"
+    delete:
+      tags:
+      - "Management"
+      summary: "delete a user"
+      description: "delete a user"
+      parameters:
+      - in: "body"
+        name: "body"
+        schema:
+          $ref: "#/components/schemas/user"
+      responses:
+        200:
+          description: "user deleted"
+        404:
+          description: "user not found"
+    put:
+      tags:
+      - "Management"
+      summary: "modify a user"
+      description: "modify a user"
+      parameters:
+      - in: "body"
+        name: "body"
+        schema:
+          $ref: "#/components/schemas/user"
+      responses:
+        200:
+          description: "user info modified"
+        404:
+          description: "user not found"
+    get:
+      tags:
+      - "Management"
+      summary: "Find a user"
+      description: "Returns user object"
+      operationId: "getUser"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "user details"
+        required: true
+        schema:
+          $ref: "#/components/userID"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/components/schemas/user"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "user not found"
+      security:
+      - api_key: []
+  /account:
+    post:
+      tags:
+      - "Management"
+      summary: "account Registration"
+      description: "add a new account to edge cloud"
+      operationId: "register an account"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "account object add"
+        required: true
+        schema:
+          $ref: "#/components/schemas/account"
+      responses:
+        405:
+          description: "Invalid input"
+        200:
+          description: "account created"
+      security:
+      - api_key: []
+    put:
+      tags:
+      - "Management"
+      summary: "Update an existing account"
+      description: ""
+      operationId: "modify an account"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "account object update"
+        required: true
+        schema:
+          $ref: "#/components/schemas/account"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Account not found"
+        "200":
+          description: "account updated"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "Management"
+      summary: "Deletes an account"
+      description: "delete an account"
+      operationId: "deleteAccount"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/components/schemas/account"
+      responses:
+        "400":
+          description: "Invalid account ID supplied"
+        "404":
+          description: "account not found"
+        "200":
+          description: "account deleted"
+      security:
+      - api_key: []
+    get:
+      tags:
+      - "Management"
+      summary: "Find an account"
+      description: "Returns a object of usage"
+      operationId: "getAccountById"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "account details"
+        required: true
+        schema:
+          $ref: "#/components/accountID"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/components/schemas/account"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "account not found"
+      security:
+      - api_key: []
+  /model:
+    post:
+      tags:
+      - "Deployment"
+      summary: "deployment a model to a node"
+      description: "add a model to an edge node"
+      operationId: "addModel"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "deploy a model"
+        required: true
+        schema:
+          $ref: "#/components/schemas/model"
+      responses:
+        405:
+          description: "Invalid input"
+        200:
+          description: "Model deployed"
+      security:
+      - api_key: []
+    put:
+      tags:
+      - "Deployment"
+      summary: "Update an existing model"
+      description: ""
+      operationId: "modify a model"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Model object update"
+        required: true
+        schema:
+          $ref: "#/components/modelID"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Model not found"
+        "405":
+          description: "Validation exception"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "Deployment"
+      summary: "Deletes a model"
+      description: "model owner delete the model from repository"
+      operationId: "deleteModel"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/components/modelID"
+      responses:
+        "400":
+          description: "Invalid model ID supplied"
+        "404":
+          description: "Model not found"
+      security:
+      - api_key: []
+  /model/{modelId}:
+    get:
+      tags:
+      - "Deployment"
+      summary: "Find model usage stats"
+      description: "Returns a object of usage"
+      operationId: "getModelById"
+      parameters: [$ref: "#/components/modelID"]
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/components/schemas/model"
+        "400":
+          description: "Invalid model ID supplied"
+        "404":
+          description: "Model not found"
+      security:
+      - api_key: []
+  /edgenode:
+    post:
+      tags:
+      - "Management"
+      summary: "create a new node"
+      description: "add a new node to the edge cloud"
+      parameters:
+      - in: "body"
+        name: "body"
+        schema:
+          $ref: "#/components/schemas/node"
+      responses:
+        "400":
+          description: "Invalid input supplied"
+        "404":
+          description: "node not found"
+        "200":
+          description: OK
+    put:
+      tags:
+      - "Management"
+      summary: "Update an existing node"
+      description: ""
+      operationId: "modify an node"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Node"
+        required: true
+        schema:
+          $ref: "#/components/schemas/node"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "node not found"
+        "200":
+          description: "node updated"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "Management"
+      summary: "Deletes a node"
+      description: "delete a node"
+      operationId: "deleteNode"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/components/schemas/node"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Node not found"
+        "200":
+          description: "node deleted"
+      security:
+      - api_key: []
+    get:
+      tags:
+      - "Management"
+      summary: "Find a node"
+      description: "Returns a node"
+      operationId: "getNode"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Node details"
+        required: true
+        schema:
+          $ref: "#/components/nodeID"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/components/schemas/node"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "node not found"
+      security:
+      - api_key: []
+  /application:
+    post:
+      tags:
+      - "Deployment"
+      summary: "deploy an application to nodes"
+      description: "deployment applications"
+      parameters:
+      - in: "body"
+        name: "body"
+        schema:
+          $ref: "#/components/schemas/application"
+      responses:
+        "400":
+          description: "Invalid input supplied"
+        "404":
+          description: "node not found"
+        "200":
+          description: OK
+    put:
+      tags:
+      - "Deployment"
+      summary: "Update an existing application"
+      description: ""
+      operationId: "modify an applicaton"
+      parameters: [$ref: "#/components/appID"]
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "application not found"
+        "200":
+          description: "applicatoin updated"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "Deployment"
+      summary: "Deletes an application"
+      description: "delete an application"
+      operationId: "deleteApp"
+      parameters: [$ref: "#/components/appID"]
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "application not found"
+        "200":
+          description: "applicaton deleted"
+      security:
+      - api_key: []
+    get:
+      tags:
+      - "Deployment"
+      summary: "Find an application"
+      description: "Returns application details"
+      operationId: "getApp"
+      parameters: [$ref: "#/components/appID"]
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/components/schemas/application"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "application not found"
+      security:
+      - api_key: []
+  /policy:
+    post:
+      tags:
+      - "Management"
+      summary: "create a new policy for an application"
+      description: "apply policy"
+      operationId: "addPolicy"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "addPolicy"
+        required: true
+        schema:
+          $ref: "#/components/schemas/policy"
+      responses:
+        405:
+          description: "Invalid input"
+        200:
+          description: "account created"
+      security:
+      - api_key: []
+    put:
+      tags:
+      - "Management"
+      summary: "Update an existing policy"
+      description: ""
+      operationId: "updatePolicy"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: " update policy"
+        required: true
+        schema:
+          $ref: "#/components/policyID"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Policy not found"
+        "200":
+          description: "Policy updated"
+      security:
+      - api_key: []
+    delete:
+      tags:
+      - "Management"
+      summary: "Deletes a policy"
+      description: "delete a policy"
+      operationId: "deletePolicy"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/components/policyID"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Policy not found"
+        "200":
+          description: "Policy deleted"
+      security:
+      - api_key: []
+    get:
+      tags:
+      - "Management"
+      summary: "Find a policy"
+      description: "policy details"
+      operationId: "getPolicy"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "policy details"
+        required: true
+        schema:
+          $ref: "#/components/policyID"
+      responses:
+        "200":
+          description: "Policy detail"
+          schema:
+            $ref: "#/components/schemas/model"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "policy not found"
+      security:
+      - api_key: []
+  /application/{appID}/{modelId}[/versions/{modelVersion}]:
+    post:
+      tags:
+      - "Deployment"
+      summary: "link a model to an application"
+      description: "link a model to an application"
+      parameters: [$ref: "#/components/modelID", $ref: "#/components/appID"]
+      responses:
+        "400":
+          description: "Invalid input supplied"
+        "404":
+          description: "application or model not found"
+        "200":
+          description: "bundel a model to an application successfully"
+      security:
+      - api_key: []
+  /models/{modelId}[/versions/{modelVersion}]:
+    post:
+      tags:
+      - "Sample"
+      summary: "application uses model to predict"
+      description: "recognize a face emotion"
+      parameters: [$ref: "#/components/modelID", $ref: "#/components/schemas/image"]
+      responses:
+        "400":
+          description: "Invalid input supplied"
+        "404":
+          description: "model not found"
+        "200":
+          description: "get predit result successfully "
+          schema:
+            type: "array"
+            items:
+              type: "number"
+              format: "float"
+      security:
+      - api_key: []
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "model_api_key"
+    in: "header"
+  OauthSecurity:
+    type: "oauth2"
+    flow: "accessCode"
+    authorizationUrl: 'https://x.x.x.x/authorization'
+    tokenUrl: 'https://oauth.xxx.api/token'
+    scopes:
+      admin: "Admin scope"
+      user: "User scope"
+security:
+  - OauthSecurity:
+    - user
+components:
+  appID:
+    in: "path"
+    required: true
+    type: "string"
+    readonly: true
+  accountID:
+    in: "path"
+    required: true
+    type: "string"
+    readonly: true
+  nodeID:
+    in: "path"
+    required: true
+    type: "string"
+    readonly: true
+  modelID:
+    in: "path"
+    required: true
+    type: "string"
+    readonly: true
+  policyID:
+    in: "path"
+    required: true
+    type: "string"
+    readonly: true
+  userID:
+    in: "path"
+    required: true
+    type: "string"
+    readonly: true
+  schemas:
+    login:
+      type: "object"
+      properties: 
+        username: 
+          type: "string"
+        password: 
+          type: "string"
+          minLength: 8
+    token:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+      required: ["token"]
+    category:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+      xml:
+        name: "Category"
+    user:
+      type: "object"
+      properties:
+        userid:
+          $ref: "#/components/userID"
+        username:
+          type: "string"
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        email:
+          type: "string"
+        password:
+          type: "string"
+        phone:
+          type: "string"
+        userStatus:
+          type: "integer"
+          format: "int32"
+          description: "User Status"
+        xml:
+          name: "User"
+    userList:
+      type: "array"
+      items: 
+        schema:
+          $ref: "#/components/schemas/user"
+    account:
+      type: "object"
+      properties:
+        accountId:
+          $ref: "#/components/accountID"    
+        users:
+          type: "array"
+          items:
+            type: "object"
+            schema:
+              $ref: "#/components/schemas/user"
+        companyName:
+          type: "string"
+        address:
+          type: "string"
+        contact number:
+          type: "string"
+        policy:
+          type: "object"
+          schema:
+            $ref: "#/components/schemas/policy"
+        accountStatus:
+          type: "string"
+          description: "account Status"
+          enum:
+          - "active"
+          - "inactive"
+    accountList:
+      type: "array"
+      items: 
+        schema:
+          $ref: "#/components/schemas/account"
+    policy:
+      type: "object"
+      properties:
+        policyId:
+          $ref: "#/components/policyID"
+        companyName:
+          type: "string"
+        accountID:
+          type: "integer"
+          format: "int64"
+        Max instance:
+          type: "integer"
+        securityPolicy:
+          type: "object"
+          schema:
+            $ref: "#/components/schemas/securityReq"
+        QoS:
+          type: "string"
+          description: "QoS"
+          enum:
+          - "1-level"
+          - "2.level"
+        xml:
+          name: "policy"
+    node:
+      type: "object"
+      properties:
+        nodeID:
+          schema:
+            $ref: "#/components/nodeID"
+        name:
+          type: "string"
+          example: "operator-ABC-US-95050-east-00110101"
+        Location:
+          type: "string"
+          example: "US-95050-east-00110101"
+        Capacity:
+          type: "string"
+          example: "4X4U server"
+        Owner:
+          type: "string"
+          example: "operator-ABC"
+        applications:
+          type: "object"
+          schemas:
+            $ref: "#/components/schemas/applicationList"
+        accounts:
+          type: "object"
+          schemas:
+            $ref: "#/components/schemas/accountList"
+        models:
+          type: "object"
+          schemas:
+            $ref: "#/components/schemas/modelList"
+        serial:
+          type: "string"
+          descriptions: "node serial number"
+          example: "abc00110101"
+        nodeStatus:
+          type: "string"
+          description: "node Status"
+          enum:
+          - "available"
+          - "mentenance"
+          - "inreachable"
+        required: ["nodeID","serial","location","nodestatus"]
+    nodeList:
+      type: "array"
+      items: 
+        schema:
+          $ref: "#/components/schemas/node"   
+    application:
+      type: "object"
+      properties:
+        applicationID:
+          schema:
+            $ref: "#/components/appID"
+        name:
+          type: "string"
+          example: "face identification"
+        category:
+          $ref: "#/components/schemas/category" 
+        Owner:
+          $ref: "#/components/accountID"
+        nodes:
+          $ref: "#/components/schemas/nodeList"
+        models:
+          $ref: "#/components/schemas/modelList"
+        version:
+          type: "string"
+          descriptions: "version number"
+          example: "abc00110101"
+        policy:
+          $ref: "#/components/schemas/policy"
+        applicationStatus:
+          type: "string"
+          description: "App Status"
+          enum:
+          - "active"
+          - "available"
+          - "inactive"
+        required: ["applicationID","version","nodestatus"]
+    applicationList:
+      type: "array"
+      items: 
+        schema:
+          $ref: "#/components/schemas/application"   
+    securityReq:
+      type: "object"
+      properties:
+        policyId:
+          type: "integer"
+          format: "int64"
+        companyName:
+          type: "string"
+        accountID:
+          type: "integer"
+          format: "int64"
+        securityReq:
+          type: "string"
+          description: "security request"
+          enum:
+          - "1-level"
+          - "2.level"
+        xml:
+          name: "policy"
+    model:
+      type: "object"
+      properties:
+        ModelId:
+          $ref: "#/components/modelID"
+        category:
+          $ref: "#/components/schemas/category"
+        name:
+          type: "string"
+          example: "emotion_rec"
+        version:
+          type: "string"
+          example: "v1"
+        applications:
+          $ref: "#/components/schemas/applicationList"
+        nodeID:
+           $ref: "#/components/nodeID"
+        usage:
+          type: "integer"
+          format: "int64"
+        deployment:
+          type: "object"
+        service:
+          type: "object"
+        status:
+          type: "string"
+          description: "model status"
+          enum:
+          - "registered"
+          - "pending"
+          - "active"
+          - "inactive"
+      xml:
+        name: "model"
+    modelList:
+      type: "array"
+      items: 
+        schema:
+          $ref: "#/components/schemas/model"
+    apiResponse:
+      type: "object"
+      properties:
+        code:
+          type: "integer"
+          format: "int32"
+        type:
+          type: "string"
+        message:
+          type: "string"
+    image:
+      in: "body"
+      name: "input image pixel array"
+      type: "string"
+      
+externalDocs:
+  description: "Find out more about offloading API"
+  url: "http://api.akraino.org/offloadingAPI"
